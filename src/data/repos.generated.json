@@ -1,30 +1,30 @@
 {
-  "generatedAt": "2026-08-19T17:02:22.065Z",
+  "generatedAt": "2026-09-13T10:29:27.024Z",
   "repos": {
     "pi-extensions": {
       "language": "TypeScript",
       "updated": "2026.08",
-      "url": "https://github.com/mikumiku-jp/pi-extensions"
+      "url": "https://github.com/mikuteto-dev/pi-extensions"
     },
-    "claude-code-sdk": {
+    "claude-cc-sdk": {
       "language": "TypeScript",
-      "updated": "2026.08",
-      "url": "https://github.com/mikumiku-jp/claude-code-sdk"
+      "updated": "2026.09",
+      "url": "https://github.com/mikuteto-dev/claude-cc-sdk"
     },
     "Ojisan": {
       "language": "C",
       "updated": "2026.07",
-      "url": "https://github.com/mikumiku-jp/Ojisan"
+      "url": "https://github.com/mikuteto-dev/Ojisan"
     },
     "open-purupuru": {
       "language": "TypeScript",
       "updated": "2026.07",
-      "url": "https://github.com/mikumiku-jp/open-purupuru"
+      "url": "https://github.com/mikuteto-dev/open-purupuru"
     },
     "litevox": {
       "language": "C++",
       "updated": "2026.06",
-      "url": "https://github.com/mikumiku-jp/litevox"
+      "url": "https://github.com/mikuteto-dev/litevox"
     }
   }
 }

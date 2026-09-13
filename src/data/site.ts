@@ -117,7 +117,7 @@ export const skills: SkillGroup[] = [
 // ── 連絡先 ────────────────────────────────────────────────────
 
 export const links = {
-  github: "https://github.com/mikumiku-jp",
+  github: "https://github.com/mikuteto-dev",
   twitter: "https://twitter.com/mikuteto_dev",
   discord: "mikuteto.dev",
 } as const;

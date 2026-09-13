@@ -13,7 +13,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const USER = "mikumiku-jp";
+const USER = "mikuteto-dev";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(HERE, "../src/data/repos.generated.json");
 /** Shared with the app so only curated repositories reach the bundle. */

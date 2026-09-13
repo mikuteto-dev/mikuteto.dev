@@ -1,0 +1,142 @@
+---
+import "../styles/global.css";
+import { site, works, skills, links } from "../data/site";
+import { ChatShell } from "../components/site/chat/ChatShell";
+
+// handle と domain が同じ値のときに "mikuteto.dev / mikuteto.dev" にならないように。
+const title =
+  site.handle === site.domain
+    ? site.domain
+    : `${site.handle} / ${site.domain}`;
+const description = `Works, skills and contact for ${site.handle}.`;
+
+/**
+ * Canvas UI's Displacement is built on html-in-canvas, which Chrome ships only
+ * to origins enrolled in the HTMLInCanvas origin trial (this is exactly how
+ * canvasui.dev runs the effect without asking anyone to flip a flag).
+ *
+ * Register https://mikuteto.dev at https://developer.chrome.com/origintrials
+ * for the "HTMLInCanvas" feature, then put the token in PUBLIC_HTML_IN_CANVAS_TOKEN.
+ * Without it the hero simply renders as plain type, which is a valid state.
+ *
+ * For local development, the equivalent is enabling
+ * chrome://flags/#enable-experimental-web-platform-features
+ */
+const originTrialToken = import.meta.env.PUBLIC_HTML_IN_CANVAS_TOKEN;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  mainEntity: {
+    "@type": "Person",
+    name: site.handle,
+    url: `https://${site.domain}`,
+    sameAs: [links.github, links.twitter],
+    knowsAbout: skills.flatMap((g) => g.items.map((i) => i.title)),
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    {
+      originTrialToken && (
+        <meta http-equiv="origin-trial" content={originTrialToken} />
+      )
+    }
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/icon-512.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="/icon-512.png" />
+    <meta name="theme-color" content="#08080a" />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(jsonLd)}
+    />
+  </head>
+
+  <body class="grain">
+    <ChatShell client:load />
+
+    {/* Everything behind the chat is client-side, so without JS (or for a
+        crawler that never interacts) the page is a wordmark and a dead input.
+        This keeps the actual content reachable. */}
+    <noscript>
+      <main class="mx-auto max-w-xl px-6 py-16 text-ink-100">
+        <h1 class="text-3xl font-medium tracking-tight">{site.handle}</h1>
+
+        <section class="mt-12">
+          <h2 class="font-mono text-xs tracking-[0.2em] text-ink-400 uppercase">
+            Works
+          </h2>
+          <ul class="mt-4">
+            {works.map((w) => (
+              <li class="border-t border-ink-800">
+                <a
+                  href={w.href}
+                  class="flex items-baseline justify-between gap-4 py-3 hover:text-ink-300"
+                >
+                  <span>{w.name}</span>
+                  <span class="font-mono text-xs text-ink-400">
+                    {w.stack}
+                    {w.updated ? ` · ${w.updated}` : ""}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="mt-12">
+          <h2 class="font-mono text-xs tracking-[0.2em] text-ink-400 uppercase">
+            Skills
+          </h2>
+          <dl class="mt-4 space-y-3">
+            {skills.map((g) => (
+              <div class="flex gap-6">
+                <dt class="w-24 shrink-0 font-mono text-[11px] tracking-[0.15em] text-ink-400 uppercase">
+                  {g.label}
+                </dt>
+                <dd class="text-sm text-ink-200">
+                  {g.items.map((i) => i.title).join(", ")}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section class="mt-12">
+          <h2 class="font-mono text-xs tracking-[0.2em] text-ink-400 uppercase">
+            Contact
+          </h2>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li>
+              <a href={links.github} class="underline underline-offset-4">
+                {links.github.replace(/^https?:\/\//, "")}
+              </a>
+            </li>
+            <li>
+              <a href={links.twitter} class="underline underline-offset-4">
+                {links.twitter.replace(/^https?:\/\//, "")}
+              </a>
+            </li>
+            <li class="text-ink-300">Discord: {links.discord}</li>
+          </ul>
+        </section>
+      </main>
+    </noscript>
+  </body>
+</html>

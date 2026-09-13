@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-08-19T17:02:22.065Z",
+  "repos": {
+    "pi-extensions": {
+      "language": "TypeScript",
+      "updated": "2026.08",
+      "url": "https://github.com/mikumiku-jp/pi-extensions"
+    },
+    "claude-code-sdk": {
+      "language": "TypeScript",
+      "updated": "2026.08",
+      "url": "https://github.com/mikumiku-jp/claude-code-sdk"
+    },
+    "Ojisan": {
+      "language": "C",
+      "updated": "2026.07",
+      "url": "https://github.com/mikumiku-jp/Ojisan"
+    },
+    "open-purupuru": {
+      "language": "TypeScript",
+      "updated": "2026.07",
+      "url": "https://github.com/mikumiku-jp/open-purupuru"
+    },
+    "litevox": {
+      "language": "C++",
+      "updated": "2026.06",
+      "url": "https://github.com/mikumiku-jp/litevox"
+    }
+  }
+}

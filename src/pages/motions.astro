@@ -1,0 +1,812 @@
+---
+import "../styles/global.css";
+
+/**
+ * モーション確認用のラボ。本番の導線には出さない（サイトマップにもリンクにも載せない）。
+ *
+ * ここの存在理由はひとつで、「詰める」作業は書いて終わりではなく見て直す作業だから。
+ * 現状と候補を同じループ時計に乗せて横に並べないと、0.05s の差は判断できない。
+ *
+ * 全スタディが --cycle を共有しているので、ページ全体が同位相で回る。
+ * 比較する二つが別々のタイミングで動き出すと、それだけで速い方が良く見えてしまう。
+ */
+
+const wordmark = "mikuteto.dev";
+
+const rows = [
+  { name: "displacement-grid", meta: "TypeScript · 2025.08" },
+  { name: "jp-subset", meta: "TypeScript · 2025.08" },
+  { name: "portfolio", meta: "Astro · 2025.08" },
+  { name: "rect-cache", meta: "TypeScript · 2025.07" },
+];
+
+/** 中央行からの距離。点いた位置が波面として外へ抜けていくように見せるための遅延。 */
+const chevron = Array.from({ length: 9 }, (_, i) => {
+  const row = Math.floor(i / 3);
+  const col = i % 3;
+  return (col + Math.abs(row - 1)) * 90;
+});
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Motion lab — mikuteto.dev</title>
+  </head>
+
+  <body class="grain">
+    <main class="lab">
+      <header class="head">
+        <p class="kicker">Motion lab</p>
+        <h1>モーション確認用</h1>
+        <p class="lede">
+          左が現状、右が詰めた版。同じループ時計に乗っているので、動き出しのタイミングも含めて比較できる。
+          <br />
+          本番導線には出していない（noindex・どこからもリンクしていない）。
+        </p>
+      </header>
+
+      {/* ───────────────────────────────────────── */}
+      <section class="study">
+        <div class="study-head">
+          <h2>01 — 行の登場</h2>
+          <p>
+            現状は <code>opacity + translateY</code> のフェード。stagger が 0.05s
+            なのに duration が 0.5s あるので、4 行が事実上同時に動いていて段差が読めない。
+            <br />
+            詰めた版は <b>罫線が先に引かれ、内容が後からその下を潜って上がる</b>。
+            順序が付くと 1 行が「組み上がる」ように見える。stagger も視認できる幅まで広げた。
+            <br />
+            <b>左右とも本番と同じ expo-out で動かしている</b>。比較相手を鈍く作れば詰めた版は必ず勝つが、それは何も証明しない。
+          </p>
+        </div>
+
+        <div class="pair">
+          <div class="pane">
+            <span class="tag">現状</span>
+            <ul class="rows">
+              {rows.map((r, i) => (
+                <li class="row row--now" style={`--i:${i}`}>
+                  <span class="dot"></span>
+                  <span class="row-name">{r.name}</span>
+                  <span class="row-meta">{r.meta}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pane">
+            <span class="tag tag--new">詰めた版</span>
+            <ul class="rows">
+              {rows.map((r, i) => (
+                <li class="row row--tuned" style={`--i:${i}`}>
+                  <span class="rule"></span>
+                  <span class="clip"><span class="dot"></span></span>
+                  <span class="clip"><span class="row-name">{r.name}</span></span>
+                  <span class="clip"><span class="row-meta">{r.meta}</span></span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────── */}
+      <section class="study">
+        <div class="study-head">
+          <h2>02 — Thinking ローダー</h2>
+          <p>
+            現状は <code>opacity 0.15 ⇄ 1</code> を <code>ease-in-out</code> で往復。
+            これは左右対称なので、点滅として読めてしまう。
+            <br />
+            詰めた版は <b>立ち上がりを速く、抜けを遅く</b>（18% で頂点、そこから緩く減衰）し、
+            <code>scale</code> を足して物理的に膨らませた。非対称にした瞬間、
+            点滅ではなく「エネルギーが通過している」ように見える。
+          </p>
+        </div>
+
+        <div class="pair">
+          <div class="pane pane--center">
+            <span class="tag">現状</span>
+            <div class="loader">
+              <span class="grid" aria-hidden="true">
+                {chevron.map((d) => <span class="cell cell--now" style={`--d:${d}ms`}></span>)}
+              </span>
+              <span class="shimmer">Thinking</span>
+              <span class="elapsed">1.3s</span>
+            </div>
+          </div>
+
+          <div class="pane pane--center">
+            <span class="tag tag--new">詰めた版</span>
+            <div class="loader">
+              <span class="grid" aria-hidden="true">
+                {chevron.map((d) => <span class="cell cell--tuned" style={`--d:${d}ms`}></span>)}
+              </span>
+              <span class="shimmer shimmer--tuned">Thinking</span>
+              <span class="elapsed">1.3s</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────── */}
+      <section class="study">
+        <div class="study-head">
+          <h2>03 — ワードマーク</h2>
+          <p>
+            字ごとに <b>下から潜り上がる + わずかなブラー</b>、加えて
+            <b>語全体の字間が広い状態から締まる</b>。字間の収束は単体では気付かれないが、
+            無いと「置かれた」で終わり、有ると「決まった」になる。
+          </p>
+        </div>
+
+        <div class="pane pane--center pane--tall">
+          <span class="tag tag--new">詰めた版</span>
+          <p class="wordmark" aria-label={wordmark}>
+            {wordmark.split("").map((ch, i) => (
+              <span class="clip clip--glyph" aria-hidden="true">
+                <span class="glyph" style={`--i:${i}`}>{ch}</span>
+              </span>
+            ))}
+          </p>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────── */}
+      <section class="study">
+        <div class="study-head">
+          <h2>04 — 押下</h2>
+          <p>
+            実際に押してみてください。現状は色が変わるだけ。詰めた版は
+            <b>押下 110ms で潰れ（縦に縮み横に伸びる）、離すと行き過ぎてから戻る</b>。
+            潰しと戻りで別のカーブを使うのが要点で、同じカーブで往復すると輪ゴムに見える。
+          </p>
+        </div>
+
+        <div class="pair">
+          <div class="pane pane--center">
+            <span class="tag">現状</span>
+            <button type="button" class="btn btn--now">送信</button>
+          </div>
+          <div class="pane pane--center">
+            <span class="tag tag--new">詰めた版</span>
+            <button type="button" class="btn btn--tuned">送信</button>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────── */}
+      <section class="study">
+        <div class="study-head">
+          <h2>05 — ホバーの二次モーション</h2>
+          <p>
+            行にホバーしてください。現状は名前と矢印が完全に同時に動く。
+            詰めた版は <b>名前 → アイコン(40ms) → 矢印(80ms)</b> と遅延をずらし、
+            矢印だけ行き過ぎて戻る。同時に動く物体は一つの板に見え、遅れて動くと個々の重さが出る。
+          </p>
+        </div>
+
+        <div class="pair">
+          <div class="pane">
+            <span class="tag">現状</span>
+            <a class="hov hov--now" href="#0">
+              <span class="dot"></span>
+              <span class="hov-name">displacement-grid</span>
+              <span class="arrow">→</span>
+            </a>
+          </div>
+          <div class="pane">
+            <span class="tag tag--new">詰めた版</span>
+            <a class="hov hov--tuned" href="#0">
+              <span class="dot"></span>
+              <span class="hov-name">displacement-grid</span>
+              <span class="arrow">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────── */}
+      <section class="study">
+        <div class="study-head">
+          <h2>06 — スクロール連動</h2>
+          <p>
+            枠の中をスクロールしてください。JS を一切使わず
+            <code>animation-timeline: view()</code> だけで、行の進入量に動きを結び付けている
+            （yui540 のサイトも同じ API を使っていた）。
+            <b>スクロールを止めればアニメーションも止まる</b>のが IntersectionObserver
+            方式との決定的な差で、指の動きに完全に追従する。
+          </p>
+        </div>
+
+        <div class="pane pane--scroll">
+          <span class="tag tag--new">詰めた版</span>
+          <div class="scroller">
+            <p class="scroll-hint">↓ スクロール</p>
+            {[...rows, ...rows].map((r) => (
+              <div class="sd-row">
+                <span class="dot"></span>
+                <span class="row-name">{r.name}</span>
+                <span class="row-meta">{r.meta}</span>
+              </div>
+            ))}
+          </div>
+          <p class="note">
+            未対応ブラウザでは静止した完成状態で出る（Firefox は現状フラグ）。動きが無いだけで、内容は欠けない。
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <style>
+      /* すべてのスタディが共有する周期。比較対象が別位相で回ると比較にならない。 */
+      .lab {
+        --cycle: 3s;
+        max-width: 68rem;
+        margin: 0 auto;
+        padding: 5rem 1.5rem 8rem;
+      }
+
+      .head {
+        margin-bottom: 5rem;
+      }
+      .kicker {
+        margin: 0 0 0.75rem;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--color-ink-400);
+      }
+      .head h1 {
+        margin: 0 0 1rem;
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+      .lede,
+      .study-head p {
+        margin: 0;
+        max-width: 46rem;
+        font-size: 14px;
+        line-height: 1.9;
+        color: var(--color-ink-300);
+      }
+      .study-head b {
+        font-weight: 500;
+        color: var(--color-ink-100);
+      }
+      code {
+        font-family: var(--font-mono);
+        font-size: 0.88em;
+        color: var(--color-ink-200);
+        background: var(--color-ink-850);
+        border: 1px solid var(--color-ink-700);
+        border-radius: 3px;
+        padding: 0.1em 0.4em;
+      }
+
+      .study {
+        border-top: 1px solid var(--color-ink-800);
+        padding-top: 2.5rem;
+        margin-bottom: 5rem;
+      }
+      .study-head h2 {
+        margin: 0 0 0.75rem;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.14em;
+        color: var(--color-ink-400);
+      }
+
+      .pair {
+        display: grid;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+      @media (min-width: 48rem) {
+        .pair {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .pane {
+        position: relative;
+        border: 1px solid var(--color-ink-800);
+        border-radius: 6px;
+        background: var(--color-ink-900);
+        padding: 2.75rem 1.5rem 1.75rem;
+        min-height: 11rem;
+      }
+      .pane--center {
+        display: grid;
+        place-content: center;
+        min-height: 12rem;
+      }
+      .pane--tall {
+        min-height: 15rem;
+        margin-top: 2rem;
+      }
+      .pane--scroll {
+        margin-top: 2rem;
+        padding-bottom: 1.25rem;
+      }
+
+      .tag {
+        position: absolute;
+        top: 0.85rem;
+        left: 1rem;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--color-ink-400);
+      }
+      .tag--new {
+        color: var(--color-ink-100);
+      }
+
+      .note {
+        margin: 1rem 0 0;
+        font-size: 11.5px;
+        line-height: 1.8;
+        color: var(--color-ink-400);
+      }
+
+      /* ── 共通パーツ ─────────────────────────── */
+      .rows {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .row,
+      .sd-row,
+      .hov {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.7rem 0;
+      }
+      .dot {
+        width: 7px;
+        height: 7px;
+        flex-shrink: 0;
+        border-radius: 2px;
+        background: var(--color-ink-600);
+      }
+      .row-name,
+      .hov-name {
+        flex: 1;
+        min-width: 0;
+        font-size: 14px;
+        color: var(--color-ink-100);
+      }
+      .row-meta {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        color: var(--color-ink-400);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* 内容を潜らせるための窓。overflow を切った箱の中で translateY するのが
+         いちばん素直なワイプで、mask のグラデーションより輪郭がはっきり出る。 */
+      .clip {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: bottom;
+      }
+
+      /* ── 01 行の登場 ────────────────────────── */
+      .row--now {
+        border-top: 1px solid var(--color-ink-800);
+        opacity: 0;
+        animation: now-row var(--cycle) linear infinite;
+        animation-delay: calc(var(--i) * 50ms);
+      }
+      /* 本番と同一条件。duration 0.5s / 3s = 16.7%、カーブは expo-out、stagger 50ms。
+         比較相手を実物より鈍く作ると、詰めた版が勝って当たり前になる。
+         セグメントのカーブはキーフレーム側で宣言する（ショートハンドの linear は
+         カーブを宣言していない区間の既定値として残しているだけ）。 */
+      @keyframes now-row {
+        0% {
+          opacity: 0;
+          transform: translateY(10px);
+          animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        17% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .row--tuned {
+        position: relative;
+        border-top: 0;
+      }
+      /* 罫線は要素の一部ではなく独立した線として引く。border だと scaleX できない。 */
+      .rule {
+        position: absolute;
+        inset: 0 0 auto;
+        height: 1px;
+        background: var(--color-ink-700);
+        transform-origin: left;
+        transform: scaleX(0);
+        animation: tuned-rule var(--cycle) linear infinite;
+        animation-delay: calc(var(--i) * var(--stagger));
+      }
+      /* 1px の線に 0.66s は掛けすぎだった。質量の無いものは速く決まるべきで、
+         かつ内容より十分先に引き終わらないと「順序」が成立しない。
+         330ms = 11%。カーブは即応側。 */
+      @keyframes tuned-rule {
+        0% {
+          transform: scaleX(0);
+          animation-timing-function: cubic-bezier(0.3, 0.9, 0.2, 1);
+        }
+        11% {
+          transform: scaleX(1);
+        }
+        100% {
+          transform: scaleX(1);
+        }
+      }
+
+      .row--tuned .clip > * {
+        display: block;
+        transform: translateY(110%);
+        animation: tuned-content var(--cycle) linear infinite;
+        /* 110ms では線が 17% しか引けておらず、実質同時に動いていた（実測で確認）。
+           260ms まで下げると線は 8 割方引き終わっており、「線 → 内容」の順序が読める。
+           完全に待たせないのは、隙間なく繋がった方が一連の動作に見えるため。 */
+        animation-delay: calc(var(--i) * var(--stagger) + 260ms);
+      }
+      .row--tuned .clip:nth-of-type(2) {
+        flex: 1;
+        min-width: 0;
+      }
+      /* 520ms = 17.5%。着地カーブ。 */
+      @keyframes tuned-content {
+        0% {
+          transform: translateY(110%);
+          animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        17.5% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      /* ── 02 ローダー ────────────────────────── */
+      .loader {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 4px);
+        gap: 1.5px;
+        flex-shrink: 0;
+      }
+      .cell {
+        width: 4px;
+        height: 4px;
+        border-radius: 1px;
+        background: var(--color-ink-100);
+        opacity: 0.15;
+      }
+
+      .cell--now {
+        animation: cell-now 650ms ease-in-out var(--d) infinite;
+      }
+      /* 左右対称。上りと下りが同じ速さなので点滅に読める。 */
+      @keyframes cell-now {
+        0%,
+        100% {
+          opacity: 0.15;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .cell--tuned {
+        animation: cell-tuned 650ms linear var(--d) infinite;
+      }
+      /* 立ち上がり 18%、抜け 42%。この非対称が「通過」の印象を作る。
+         区間ごとにカーブも変える。点く時は一気に、抜ける時は減衰させる。 */
+      @keyframes cell-tuned {
+        0% {
+          opacity: 0.12;
+          transform: scale(0.82);
+          animation-timing-function: cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+        18% {
+          opacity: 1;
+          transform: scale(1.2);
+          animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1);
+        }
+        60% {
+          opacity: 0.3;
+          transform: scale(0.9);
+          animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+        }
+        100% {
+          opacity: 0.12;
+          transform: scale(0.82);
+        }
+      }
+
+      .shimmer {
+        font-size: 13px;
+        font-weight: 500;
+        background-image: linear-gradient(
+          90deg,
+          var(--color-ink-400) 35%,
+          var(--color-ink-100) 50%,
+          var(--color-ink-400) 65%
+        );
+        background-size: 200% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: shimmer 1.4s linear infinite;
+      }
+      /* 現状は linear で等速に流れる。詰めた版は光帯の幅を絞り、間に休符を入れて
+         「走査している」感じにする。ずっと流れ続けると背景の模様になって意味が消える。 */
+      .shimmer--tuned {
+        background-image: linear-gradient(
+          90deg,
+          var(--color-ink-400) 42%,
+          var(--color-ink-100) 50%,
+          var(--color-ink-400) 58%
+        );
+        animation: shimmer-tuned 2.1s var(--ease-glide) infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+      @keyframes shimmer-tuned {
+        0% {
+          background-position: 200% 0;
+        }
+        /* 66% で走査を終え、残り 34% は休符。 */
+        66%,
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .elapsed {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--color-ink-400);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ── 03 ワードマーク ────────────────────── */
+      .wordmark {
+        margin: 0;
+        font-size: clamp(1.75rem, 6vw, 3.25rem);
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        animation: word-tracking var(--cycle) var(--ease-settle) infinite;
+      }
+      /* 字間の収束。字ごとの動きと違う時間軸で効かせたいので、語全体に別で掛ける。 */
+      @keyframes word-tracking {
+        0% {
+          letter-spacing: 0.14em;
+        }
+        40%,
+        100% {
+          letter-spacing: -0.01em;
+        }
+      }
+      .clip--glyph {
+        /* ディセンダを切らないよう下に余裕を持たせ、その分だけ持ち上げて位置を戻す。 */
+        padding-bottom: 0.18em;
+        margin-bottom: -0.18em;
+      }
+      .glyph {
+        display: inline-block;
+        transform: translateY(110%);
+        filter: blur(6px);
+        opacity: 0;
+        animation: glyph-in var(--cycle) linear infinite;
+        animation-delay: calc(var(--i) * 40ms);
+      }
+      /* 位置・ブラー・不透明度はそれぞれ別の時間で解く。
+         三つが同着すると「一枚の板が出てきた」に見え、字が個々に立ち上がらない。
+         位置 0→20%(600ms) は着地カーブ、ブラーと不透明度は 12% で先に抜く。 */
+      @keyframes glyph-in {
+        0% {
+          transform: translateY(110%);
+          filter: blur(6px);
+          opacity: 0;
+          animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        12% {
+          filter: blur(0);
+          opacity: 1;
+        }
+        20%,
+        100% {
+          transform: translateY(0);
+          filter: blur(0);
+          opacity: 1;
+        }
+      }
+
+      /* ── 04 押下 ────────────────────────────── */
+      .btn {
+        appearance: none;
+        border: 1px solid var(--color-ink-700);
+        background: var(--color-ink-850);
+        color: var(--color-ink-100);
+        font: inherit;
+        font-size: 14px;
+        padding: 0.7rem 2rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn--now {
+        transition: background-color 150ms ease;
+      }
+      .btn--now:active {
+        background: var(--color-ink-800);
+      }
+
+      .btn--tuned {
+        /* 離した時のカーブ。行き過ぎて戻る。 */
+        transition:
+          transform var(--dur-tap) var(--ease-back),
+          background-color var(--dur-tap) var(--ease-snap);
+      }
+      .btn--tuned:hover {
+        background: var(--color-ink-800);
+      }
+      .btn--tuned:active {
+        /* 潰れは行きと戻りで別カーブ。押下側は速く沈める。 */
+        transition:
+          transform var(--dur-press) var(--ease-snap),
+          background-color var(--dur-press) var(--ease-snap);
+        transform: scale(1.035, 0.93);
+        background: var(--color-ink-800);
+      }
+
+      /* ── 05 ホバー ──────────────────────────── */
+      .hov {
+        text-decoration: none;
+        border-top: 1px solid var(--color-ink-800);
+      }
+      .arrow {
+        color: var(--color-ink-600);
+        font-size: 14px;
+      }
+
+      .hov--now .hov-name,
+      .hov--now .arrow,
+      .hov--now .dot {
+        transition: all 300ms ease;
+      }
+      .hov--now:hover .hov-name {
+        transform: translateX(4px);
+      }
+      .hov--now:hover .arrow {
+        color: var(--color-ink-100);
+      }
+
+      /* 遅延を 0 / 40 / 80ms でずらす。同着させないことが全て。 */
+      .hov--tuned .hov-name {
+        transition: transform var(--dur-hover) var(--ease-settle);
+      }
+      .hov--tuned .dot {
+        transition:
+          background-color var(--dur-tap) var(--ease-snap) 40ms,
+          transform var(--dur-hover) var(--ease-back) 40ms;
+      }
+      .hov--tuned .arrow {
+        transition:
+          transform var(--dur-hover) var(--ease-back) 80ms,
+          color var(--dur-tap) var(--ease-snap) 80ms;
+      }
+      .hov--tuned:hover {
+        border-color: var(--color-ink-400);
+      }
+      .hov--tuned:hover .hov-name {
+        transform: translateX(5px);
+      }
+      .hov--tuned:hover .dot {
+        background: var(--color-ink-100);
+        transform: scale(1.35);
+      }
+      .hov--tuned:hover .arrow {
+        color: var(--color-ink-100);
+        transform: translateX(5px);
+      }
+      .hov--tuned {
+        transition: border-color var(--dur-hover) var(--ease-snap);
+      }
+
+      /* ── 06 スクロール連動 ──────────────────── */
+      .scroller {
+        height: 14rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        /* view() は自分の祖先スクローラを見る。ここが基準面になる。 */
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-ink-700) transparent;
+      }
+      .scroll-hint {
+        margin: 0 0 0.5rem;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--color-ink-600);
+      }
+      .sd-row {
+        border-top: 1px solid var(--color-ink-800);
+      }
+
+      @supports (animation-timeline: view()) {
+        .sd-row {
+          animation: sd-enter linear both;
+          animation-timeline: view();
+          /* 下から 8% 入った時点で開始し、40% 入った時点で完了。
+             cover 100% まで使うと、画面中央でもまだ動いていて落ち着かない。 */
+          animation-range: entry 8% entry 45%;
+        }
+        @keyframes sd-enter {
+          from {
+            opacity: 0;
+            transform: translateY(14px);
+            filter: blur(3px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+          }
+        }
+      }
+
+      /* 全スタディを一括で止める。ここを外すと確認できなくなるので、
+         ラボでも本番と同じ扱いにしておく。 */
+      @media (prefers-reduced-motion: reduce) {
+        .lab *,
+        .lab *::before,
+        .lab *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .row--now,
+        .glyph {
+          opacity: 1;
+          transform: none;
+        }
+        .row--tuned .clip > *,
+        .rule {
+          transform: none;
+        }
+      }
+    </style>
+  </body>
+</html>

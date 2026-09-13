@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* Japanese is cut to this build's exact glyph set by integrations/jp-subset.ts,
+   which injects its @font-face at build time. Dev has no token, so the stack
+   below falls through to the platform face. */
+@import "@fontsource-variable/geist/index.css";
+@import "@fontsource-variable/geist-mono/index.css";
+
+@theme {
+  --color-ink-950: #08080a;
+  --color-ink-900: #0b0b0e;
+  --color-ink-850: #101014;
+  --color-ink-800: #16161b;
+  --color-ink-700: #202027;
+  --color-ink-600: #2c2c35;
+  /* 5.87:1 on ink-950. #6b6b77 measured 3.81:1 and failed AA on the placeholder
+     and label text this carries. */
+  --color-ink-400: #8a8a96;
+  --color-ink-300: #9a9aa6;
+  --color-ink-200: #c9c9d2;
+  --color-ink-100: #ededf1;
+
+  --font-jp: "Zen Kaku Subset", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", "Noto Sans CJK JP", meiryo,
+    sans-serif;
+  --font-sans: "Geist Variable", var(--font-jp), ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono: "Geist Mono Variable", var(--font-jp), ui-monospace, monospace;
+
+  /* ── Motion ──
+     これまで全要素が expo-out 一本 + duration 0.5s + stagger 0.05s で動いていた。
+     カーブが一種類しかないと、登場も押下もホバーも同じ「質感」になり、
+     どれだけ数を足しても平坦に見える。役割ごとに分ける。
+
+     Tailwind v4 の --ease-* 名前空間なので ease-settle / ease-snap として使える。 */
+
+  /* 着地。長い距離を移動して静かに止まるもの（セクション、行の登場）。 */
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  /* 即応。指に追従すべきもの（押下、フォーカス、色）。頭が速く尾が短い。 */
+  --ease-snap: cubic-bezier(0.3, 0.9, 0.2, 1);
+  /* 行き過ぎて戻る。質量のあるものが止まる時の挙動。押下の解放、矢印。 */
+  --ease-back: cubic-bezier(0.34, 1.4, 0.5, 1);
+  /* 予備動作。出る前に一度引く。単体で使うと目立ちすぎるので要所のみ。 */
+  --ease-anticipate: cubic-bezier(0.62, -0.35, 0.35, 1.28);
+  /* 等速に近い長距離移動。マーキーやシマー用。 */
+  --ease-glide: cubic-bezier(0.22, 0.61, 0.24, 1);
+}
+
+:root {
+  color-scheme: dark;
+
+  /* 時間の段階。役割で決め、その場の気分で数字を書かない。 */
+  --dur-press: 110ms; /* 押下の沈み込み。100ms を超えると鈍く感じる。 */
+  --dur-tap: 190ms; /* 解放・ホバーの色 */
+  --dur-hover: 280ms; /* ホバーの移動 */
+  --dur-enter: 460ms; /* 単一要素の登場 */
+  --dur-section: 720ms; /* セクション単位の登場 */
+  --dur-hero: 1100ms; /* ヒーロー */
+
+  /* カスケードが視認できる最小値。0.05s は duration 0.5s に対して短すぎて、
+     5 行が事実上同時に動いていた。 */
+  --stagger: 72ms;
+}
+
+html {
+  background-color: var(--color-ink-950);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  font-feature-settings: "palt" 1;
+  -webkit-font-smoothing: antialiased;
+  /* The wordmark is sized off the viewport; without this a single overflowing
+     glyph run would let the whole page pan sideways on a phone. */
+  overflow-x: hidden;
+  /* Grey flash on tap fights the deliberate press states on every control. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+:lang(ja) {
+  line-height: 1.9;
+}
+
+::selection {
+  background: var(--color-ink-100);
+  color: var(--color-ink-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink-100);
+  outline-offset: 3px;
+}
+
+/* Text inputs match :focus-visible on pointer focus too, so this global ring
+   would stack a hard rectangle inside the prompt bar's rounded border. The bar
+   itself carries the focus state instead. */
+.field:focus-visible {
+  outline: none;
+}
+
+/* Below 16px iOS Safari zooms the viewport on focus and never zooms back. */
+@media (pointer: coarse) {
+  .field {
+    font-size: 16px;
+  }
+}
+
+/* The home screen read as an unfinished void rather than deliberate space, and a
+   flat fill gives the eye nothing to sit against. Neutral rather than a tinted
+   glow, so it adds depth without introducing a second colour. */
+.home-glow {
+  background: radial-gradient(
+    60% 45% at 50% 38%,
+    rgb(237 237 241 / 0.055),
+    transparent 70%
+  );
+}
+
+/* Fixed and pointer-events-none: a grain layer on a scrolling container repaints
+   the whole surface every frame. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Cells rest dim and pulse to full, so the chevron reads as a wavefront moving
+   through a grid that is always present rather than dots being switched on. */
+@keyframes pixel-on {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer-text {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.label-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-ink-400) 35%,
+    var(--color-ink-100) 50%,
+    var(--color-ink-400) 65%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer-text 1.4s linear infinite;
+}
+
+/* Keep comprehension-aiding transitions (opacity, colour) and drop movement:
+   keyframes are what carry the loops and translates on this page, so capping
+   animation-* is enough without blanketing every transition to zero. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .label-shimmer {
+    background-image: none;
+    color: var(--color-ink-400);
+  }
+}

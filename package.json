@@ -1,0 +1,38 @@
+{
+  "name": "mikuteto-dev",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "prebuild": "node scripts/fetch-repos.mjs",
+    "repos:sync": "node scripts/fetch-repos.mjs"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.3",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "astro": "^7.2.3",
+    "motion": "^13.1.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "simple-icons": "^16.28.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@fontsource/zen-kaku-gothic-new": "^5.3.0",
+    "@types/node": "^26.5.1",
+    "subset-font": "^2.5.0",
+    "typescript": "^6.0.3"
+  }
+}

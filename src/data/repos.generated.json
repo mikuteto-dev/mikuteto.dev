@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T11:29:19.687Z",
+  "generatedAt": "2026-11-19T11:39:26.031Z",
   "repos": {
     "MTLRender": {
       "language": "Java",
@@ -15,6 +15,21 @@
       "language": "Rust",
       "updated": "2026.11",
       "url": "https://github.com/mikuteto-dev/editor"
+    },
+    "ai-compile": {
+      "language": "C++",
+      "updated": "2026.11",
+      "url": "https://github.com/mikuteto-dev/ai-compile"
+    },
+    "optimize": {
+      "language": "Python",
+      "updated": "2026.10",
+      "url": "https://github.com/mikuteto-dev/optimize"
+    },
+    "Ojisan": {
+      "language": "C",
+      "updated": "2026.07",
+      "url": "https://github.com/mikuteto-dev/Ojisan"
     },
     "zeta-tps": {
       "language": "JavaScript",

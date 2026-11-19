@@ -1,29 +1,34 @@
 {
-  "generatedAt": "2026-09-13T10:29:27.024Z",
+  "generatedAt": "2026-11-19T11:29:19.687Z",
   "repos": {
-    "pi-extensions": {
-      "language": "TypeScript",
-      "updated": "2026.08",
-      "url": "https://github.com/mikuteto-dev/pi-extensions"
+    "MTLRender": {
+      "language": "Java",
+      "updated": "2026.11",
+      "url": "https://github.com/mikuteto-dev/MTLRender"
     },
-    "claude-cc-sdk": {
-      "language": "TypeScript",
-      "updated": "2026.09",
-      "url": "https://github.com/mikuteto-dev/claude-cc-sdk"
+    "plamo3-0.8b-runtime": {
+      "language": "Swift",
+      "updated": "2026.11",
+      "url": "https://github.com/mikuteto-dev/plamo3-0.8b-runtime"
     },
-    "Ojisan": {
-      "language": "C",
-      "updated": "2026.07",
-      "url": "https://github.com/mikuteto-dev/Ojisan"
+    "editor": {
+      "language": "Rust",
+      "updated": "2026.11",
+      "url": "https://github.com/mikuteto-dev/editor"
     },
-    "open-purupuru": {
-      "language": "TypeScript",
-      "updated": "2026.07",
-      "url": "https://github.com/mikuteto-dev/open-purupuru"
+    "zeta-tps": {
+      "language": "JavaScript",
+      "updated": "2026.10",
+      "url": "https://github.com/mikuteto-dev/zeta-tps"
+    },
+    "YacchoGPT": {
+      "language": "Shell",
+      "updated": "2026.10",
+      "url": "https://github.com/mikuteto-dev/YacchoGPT"
     },
     "litevox": {
       "language": "C++",
-      "updated": "2026.06",
+      "updated": "2026.11",
       "url": "https://github.com/mikuteto-dev/litevox"
     }
   }

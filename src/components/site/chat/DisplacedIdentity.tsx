@@ -14,6 +14,10 @@ import { Suspense, lazy, useSyncExternalStore, type ReactNode } from "react";
  */
 function canDisplace(): boolean {
       if (typeof document === "undefined") return false;
+      // Chrome exposes these methods without an active trial, but they paint nothing.
+      if (!document.querySelector('meta[http-equiv="origin-trial"]')) {
+            return false;
+      }
       const probe = document.createElement("canvas") as HTMLCanvasElement &
             Record<string, unknown>;
       const ctx = probe.getContext("2d") as Record<string, unknown> | null;

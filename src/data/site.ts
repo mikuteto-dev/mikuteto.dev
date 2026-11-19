@@ -12,9 +12,12 @@ import {
   siOpenjdk,
   siReact,
   siRust,
+  siSwift,
   siTailwindcss,
   siTypescript,
+  siVuedotjs,
   siWebgl,
+  siZig,
 } from "simple-icons";
 import featured from "./featured.json";
 import generated from "./repos.generated.json";
@@ -51,11 +54,12 @@ const LANGUAGE_MARKS: Record<string, SkillIcon> = {
   C: siC,
   "C++": siCplusplus,
   Rust: siRust,
+  Swift: siSwift,
   Java: { ...siOpenjdk, title: "Java" },
   Shell: { ...siGnubash, title: "Bash" },
 };
 
-export const works: Work[] = featured
+const repositoryWorks: Work[] = featured
   .flatMap((name) => {
     const repo = generated.repos[name as keyof typeof generated.repos];
     if (!repo) return [];
@@ -70,6 +74,16 @@ export const works: Work[] = featured
     ];
   })
   .sort((a, b) => (b.updated ?? "").localeCompare(a.updated ?? ""));
+
+export const works: Work[] = [
+  {
+    name: "collapse.jp",
+    stack: "SNS · Vue / TypeScript",
+    icon: siVuedotjs,
+    href: "https://collapse.jp",
+  },
+  ...repositoryWorks,
+];
 
 // ── スキル ────────────────────────────────────────────────────
 
@@ -103,6 +117,7 @@ export const skills: SkillGroup[] = [
       siC,
       siCplusplus,
       siRust,
+      siZig,
       // Simple Icons has no Java mark (trademark) and its "Shell" is the oil
       // company, so the accurate marks carry the names people actually use.
       { ...siOpenjdk, title: "Java" },

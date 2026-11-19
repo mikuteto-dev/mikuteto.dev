@@ -65,11 +65,16 @@ const repositoryWorks: Work[] = featured
   .flatMap((name) => {
     const repo = generated.repos[name as keyof typeof generated.repos];
     if (!repo) return [];
+    const isAgentSkill = name === "YacchoGPT";
     return [
       {
         name,
-        stack: repo.language ?? "",
-        icon: repo.language ? LANGUAGE_MARKS[repo.language] : undefined,
+        stack: isAgentSkill ? "Agent Skill" : (repo.language ?? ""),
+        icon: isAgentSkill
+          ? undefined
+          : repo.language
+            ? LANGUAGE_MARKS[repo.language]
+            : undefined,
         href: repo.url,
         updated: repo.updated,
       },

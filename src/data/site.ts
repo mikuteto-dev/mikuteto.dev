@@ -11,7 +11,6 @@ import {
   siNodedotjs,
   siOpenjdk,
   siPython,
-  siReact,
   siRust,
   siSwift,
   siTailwindcss,
@@ -127,7 +126,7 @@ export const skills: SkillGroup[] = [
     ],
   },
   { label: "Runtime", items: [siNodedotjs, siBun, siDeno] },
-  { label: "Frontend", items: [siReact, siAstro, siTailwindcss, siWebgl] },
+  { label: "Frontend", items: [siVuedotjs, siAstro, siTailwindcss, siWebgl] },
   { label: "Platform", items: [siAndroid, siDiscord] },
 ];
 

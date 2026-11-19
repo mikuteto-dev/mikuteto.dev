@@ -65,7 +65,7 @@ const repositoryWorks: Work[] = featured
   .flatMap((name) => {
     const repo = generated.repos[name as keyof typeof generated.repos];
     if (!repo) return [];
-    const isAgentSkill = name === "YacchoGPT";
+    const isAgentSkill = name === "YacchoGPT" || name === "optimize";
     return [
       {
         name,

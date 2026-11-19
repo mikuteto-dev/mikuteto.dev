@@ -8,6 +8,7 @@ import {
   siDiscord,
   siGnubash,
   siJavascript,
+  siMacos,
   siNodedotjs,
   siOpenjdk,
   siPython,
@@ -127,7 +128,7 @@ export const skills: SkillGroup[] = [
   },
   { label: "Runtime", items: [siNodedotjs, siBun, siDeno] },
   { label: "Frontend", items: [siVuedotjs, siAstro, siTailwindcss, siWebgl] },
-  { label: "Platform", items: [siAndroid, siDiscord] },
+  { label: "Platform", items: [siAndroid, siMacos, siDiscord] },
 ];
 
 // ── 連絡先 ────────────────────────────────────────────────────
